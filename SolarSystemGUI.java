@@ -1,5 +1,6 @@
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -32,9 +33,18 @@ public class SolarSystemGUI implements ActionListener
 		window.setContentPane(panel);
 		window.setSize(300,300);
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setResizable(false);
 
-        dataPanel.setLayout(new GridLayout(attributes.length,2));
+        //Set sane minimum sizing, allow resizing.
+        window.setMinimumSize(window.getSize());
+        window.setResizable(true);
+
+        //Configure the data panel with a grid layout (and guttering).
+        GridLayout dataPanelLayout = new GridLayout(attributes.length,2);
+        dataPanelLayout.setHgap(5);
+        dataPanel.setBorder(new EmptyBorder(0,5,0,0));
+        dataPanel.setLayout(dataPanelLayout);
+
+        //Add the attribute labels to the grid.
         for (int i=0; i<attributes.length; i++)
         {
             dataPanel.add(new JLabel(attributes[i]));
@@ -128,7 +138,7 @@ public class SolarSystemGUI implements ActionListener
     
             } catch (Exception ex)
             {
-                this.reportInvalidData("Error occurred when parsing fields: " + ex.getMessage() + " (are some fields empty or missing?)");
+                this.reportInvalidData("Could not parse fields,  '" + ex.getMessage() + "' (are some fields invalid or empty?)");
                 return;
             }
         }
