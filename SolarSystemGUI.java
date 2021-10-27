@@ -12,7 +12,7 @@ import java.awt.event.*;
 public class SolarSystemGUI implements ActionListener
 {
 	private JFrame window = new JFrame("Solar System GUI");
-    private String[] attributes = {"Name", "Orbital Distance", "Orbital Angle", "Size", "Speed", "Colour", "Orbits"};
+    private String[] attributes = {"Name", "Orbital Distance", "Initial Angle", "Size", "Speed", "Colour", "Orbits"};
     private JLabel[] attributeLabels;
     private JTextField[] values = new JTextField[attributes.length];
     private JPanel dataPanel = new JPanel();
