@@ -1,12 +1,12 @@
 /**
- * Defines the methods that a SolatSystemController is required to implement.
+ * Defines the methods that a SolarSystemController is required to implement.
  * @see SolarSystemGUI
  * @see SolarSystem
  */
 public interface SolarSystemController
 {
     /**
-     * Add a new solar object with the given characterisitcs, that orbits the centre of the screen.
+     * Add a new solar object with the given characteristics, that orbits the centre of the screen.
      * @param name the name of the new solar object being created.
      * @param orbitalDistance the distance of the new object from the centre of the screen.
      * @param initialAngle the initial orbital angle of the object.
@@ -17,7 +17,7 @@ public interface SolarSystemController
     public void add(String name, double orbitalDistance, double initialAngle, double size, double speed, String colour);
 
     /**
-     * Add a new solar object with the given characterisitcs, that orbits a given parent object (e.g. planet).
+     * Add a new solar object with the given characteristics, that orbits a given parent object (e.g. planet).
      * @param name the name of the new solar object being created.
      * @param orbitalDistance the distance of the new object from its parent object.
      * @param initialAngle the initial orbital angle of the object.

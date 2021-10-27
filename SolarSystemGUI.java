@@ -69,9 +69,13 @@ public class SolarSystemGUI implements ActionListener
         this.controller = controller;
     }
 
-    private void reportInvalidData()
+    /***
+     * Reports that invalid data has been entered to the user with a popup, along with a reason.
+     * @param reason The reason the data is invalid.
+     */
+    private void reportInvalidData(String reason)
     {
-        System.out.println("Invalid data entered. Please check data feilds and try again.");
+        JOptionPane.showMessageDialog(null, "Invalid data entered: " + reason, "Solar System: Invalid Information!", JOptionPane.ERROR_MESSAGE);
     }
 
     /**
@@ -95,12 +99,21 @@ public class SolarSystemGUI implements ActionListener
                 String orbits = values[6].getText();
 
                 // Ensure required fields are valid
-                if (name == null || name.equals("") || colour == null || colour.equals("") || size <= 0.0)
+                if (name == null || name.equals("")) {
+                    this.reportInvalidData("No name provided.");
+                    return;
+                }
+                if (colour == null || colour.equals("")) {
+                    this.reportInvalidData("No colour provided.");
+                    return;
+                }
+                if (size <= 0.0)
                 {
-                    this.reportInvalidData();
+                    this.reportInvalidData("Invalid size (below zero).");
                     return;
                 }
 
+                //If we don't have a controller, don't need to add anything.
                 if (controller != null)
                 {
                     if (orbits != null && !orbits.equals(""))
@@ -115,7 +128,7 @@ public class SolarSystemGUI implements ActionListener
     
             } catch (Exception ex)
             {
-                this.reportInvalidData();
+                this.reportInvalidData("Error occurred when parsing fields: " + ex.getMessage() + " (are some fields empty or missing?)");
                 return;
             }
         }
@@ -125,7 +138,7 @@ public class SolarSystemGUI implements ActionListener
             String name = values[0].getText();
             if (name == null || name.equals(""))
             {
-                this.reportInvalidData();
+                this.reportInvalidData("Name is null or empty.");
                 return;
             }
 
