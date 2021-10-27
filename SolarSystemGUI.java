@@ -12,7 +12,8 @@ import java.awt.event.*;
 public class SolarSystemGUI implements ActionListener
 {
 	private JFrame window = new JFrame("Solar System GUI");
-    private String[] attributes = {"Name", "Orbital Distance", "Orbital Angle", "Size", "Speed", "Colour", "Orbits"};  
+    private String[] attributes = {"Name", "Orbital Distance", "Orbital Angle", "Size", "Speed", "Colour", "Orbits"};
+    private JLabel[] attributeLabels;
     private JTextField[] values = new JTextField[attributes.length];
     private JPanel dataPanel = new JPanel();
     private JPanel buttonPanel = new JPanel();
@@ -45,9 +46,12 @@ public class SolarSystemGUI implements ActionListener
         dataPanel.setLayout(dataPanelLayout);
 
         //Add the attribute labels to the grid.
+        attributeLabels = new JLabel[attributes.length];
         for (int i=0; i<attributes.length; i++)
         {
-            dataPanel.add(new JLabel(attributes[i]));
+            JLabel label = new JLabel(attributes[i]);
+            attributeLabels[i] = label;
+            dataPanel.add(label);
             values[i] = new JTextField("");
             dataPanel.add(values[i]);
         }
@@ -95,28 +99,23 @@ public class SolarSystemGUI implements ActionListener
 	{
         boolean valid = true;
 
+        //Clear colouring from previous actions.
+        clearValidationStyling();
+
 		if (e.getSource() == addButton)
 		{
             // Validate the data fields...
             try
             {
-                String name = values[0].getText();
-                double distance = Double.parseDouble(values[1].getText());
-                double angle = Double.parseDouble(values[2].getText());
-                double size = Double.parseDouble(values[3].getText());
-                double speed = Double.parseDouble(values[4].getText());
-                String colour = values[5].getText();
+                String name = validateString(0);
+                double distance = validateDouble(1);
+                double angle = validateDouble(2);
+                double size = validateDouble(3);
+                double speed = validateDouble(4);
+                String colour = validateString(5);
                 String orbits = values[6].getText();
 
-                // Ensure required fields are valid
-                if (name == null || name.equals("")) {
-                    this.reportInvalidData("No name provided.");
-                    return;
-                }
-                if (colour == null || colour.equals("")) {
-                    this.reportInvalidData("No colour provided.");
-                    return;
-                }
+                //Ensure the size is valid.
                 if (size <= 0.0)
                 {
                     this.reportInvalidData("Invalid size (below zero).");
@@ -145,13 +144,15 @@ public class SolarSystemGUI implements ActionListener
 
         if (e.getSource() == removeButton)
 		{
-            String name = values[0].getText();
-            if (name == null || name.equals(""))
-            {
-                this.reportInvalidData("Name is null or empty.");
-                return;
+		    //Validate the name.
+            String name = null;
+            try {
+                name = validateString(0);
+            } catch (Exception exception) {
+                this.reportInvalidData("Name is null or empty, cannot remove.");
             }
 
+            //Remove from controller (if we have one).
             if (controller != null)
             {
                 controller.remove(name);
@@ -159,4 +160,66 @@ public class SolarSystemGUI implements ActionListener
         }
 
 	}
+
+    /**
+     * Clears all colour styling caused by validation functions (validateDouble & validateString).
+     */
+	private void clearValidationStyling() {
+        for (JLabel label : attributeLabels)
+            label.setForeground(Color.BLACK);
+        for (JTextField field : values)
+            field.setForeground(Color.BLACK);
+    }
+
+    /**
+     * Verifies that a field has a valid double, and returns it if so.
+     * If not, throws an exception on a failed parse.
+     * @param index The index of the field to validate.
+     * @return The double value from the text field.
+     */
+	private double validateDouble(int index) throws Exception {
+
+	    //Get the field.
+        String fieldName = attributes[index];
+        JTextField field = values[index];
+
+        //Get the double out from the field (if valid).
+	    double out;
+        try {
+            out = Double.parseDouble(field.getText());
+            field.setForeground(Color.BLACK);
+        }
+        catch(Exception e) {
+            attributeLabels[index].setForeground(Color.RED);
+            field.setForeground(Color.RED);
+            throw new Exception("Invalid double in field " + fieldName + ".");
+        }
+
+        //Return the double.
+        return out;
+    }
+
+    /**
+     * Verifies that a field has a valid string (non-null, non-empty) and returns it if so.
+     * If not, throws an exception on a failed validation.
+     * @param index The index of the text field to validate.
+     * @return The string value from the text field.
+     * @throws Exception
+     */
+    private String validateString(int index) throws Exception {
+        //Get the field.
+        String fieldName = attributes[index];
+        JTextField field = values[index];
+
+        //Is the string null or empty?
+        String fieldText = field.getText();
+        if (fieldText == null || fieldText.equals("")) {
+            attributeLabels[index].setForeground(Color.RED);
+            field.setForeground(Color.RED);
+            throw new Exception("Empty or null string in field " + fieldName + ".");
+        }
+
+        field.setForeground(Color.BLACK);
+        return fieldText;
+    }
 }
