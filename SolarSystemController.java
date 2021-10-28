@@ -1,6 +1,5 @@
 /**
  * Defines the methods that a SolarSystemController is required to implement.
- * 
  * @see SolarSystemGUI
  * @see SolarSystem
  */
